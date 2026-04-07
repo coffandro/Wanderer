@@ -1,12 +1,7 @@
-class Vehicle {
-  PVector position;
-  PVector velocity;
-  PVector acceleration;
-
+class Vehicle extends Object {
   float r;
   float wandertheta;
   float maxforce;
-  float maxspeed;
 
   float wanderR = 25;
   float wanderD = 80;
@@ -23,22 +18,6 @@ class Vehicle {
     maxforce = 0.05;
   }
 
-  void run() {
-    update();
-    borders();
-    display();
-  }
-
-  void update() {
-    velocity.add(acceleration);
-    velocity.limit(maxspeed);
-
-    position.add(velocity);
-
-    // reset acceleration every frame
-    acceleration.mult(0);
-  }
-
   void wander() {
     float change = 0.3;
     wandertheta += random(-change, change);
@@ -52,7 +31,7 @@ class Vehicle {
 
     PVector circleOffset = new PVector(wanderR * cos(wandertheta + h), wanderR * sin(wandertheta + h));
     PVector target = PVector.add(circlepos, circleOffset);
-    seek(target);
+    seek(target); // We seek the wandering position rather than target
 
     if (debug) drawWanderStuff(position, circlepos, target, wanderR);
   }
@@ -82,16 +61,10 @@ class Vehicle {
     vertex(r, r*2);
     endShape();
   }
-
-  void display() {
-    float theta = velocity.heading() + radians(90);
-
-    pushMatrix();
-    translate(position.x, position.y);
-    rotate(theta);
-
-    drawShape();
-    popMatrix();
+  
+  void update() {
+    wander(); // Our default behavior
+    borders();
   }
 
   void borders() {

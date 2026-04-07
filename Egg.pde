@@ -1,0 +1,3 @@
+class Egg extends Object {
+
+}
