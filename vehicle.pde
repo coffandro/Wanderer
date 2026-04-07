@@ -12,8 +12,6 @@ class Vehicle {
   float wanderD = 80;
   float sensorRange = wanderR + wanderD;
 
-  boolean isHunter;
-
   Vehicle(float x, float y) {
     acceleration = new PVector(0, 0);
     velocity = new PVector(0, 0);
@@ -29,13 +27,6 @@ class Vehicle {
     update();
     borders();
     display();
-  }
-
-  void hunterKill(Vehicle target) {
-    target.isHunter = true;
-    
-    killSound.rewind();
-    killSound.play();
   }
 
   void update() {
@@ -82,28 +73,24 @@ class Vehicle {
     applyForce(steer);
   }
 
+  void drawShape() {
+    fill(127);
+    stroke(0);
+    beginShape(TRIANGLES);
+    vertex(0, -r*2);
+    vertex(-r, r*2);
+    vertex(r, r*2);
+    endShape();
+  }
+
   void display() {
     float theta = velocity.heading() + radians(90);
-    if (isHunter) {
-      fill(255, 0, 0);
-    } else {
-      fill(127);
-    }
-    stroke(0);
+
     pushMatrix();
     translate(position.x, position.y);
     rotate(theta);
-    if (isHunter) {
-      image(sprite2, 0, 0, r * 10, r * 10);
-    } else {
-      image(sprite1, 0, 0, r * 10, r * 10);
-    }
-    
-    //beginShape(TRIANGLES);
-    //vertex(0, -r*2);
-    //vertex(-r, r*2);
-    //vertex(r, r*2);
-    //endShape();
+
+    drawShape();
     popMatrix();
   }
 

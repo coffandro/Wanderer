@@ -2,41 +2,29 @@ import ddf.minim.*;
 
 Vehicle wanderers[];
 boolean debug = false;
-PImage sprite1, sprite2;
-
-Minim minim;
-AudioPlayer killSound;
 
 void setup() {
   size(640, 360);
 
-  // we pass this to Minim so that it can load files from the data directory
-  minim = new Minim(this);
-  
-  sprite1 = loadImage("data/sprite.png");
-  sprite2 = loadImage("data/haack.png");
-  imageMode(CENTER);
-
   wanderers = new Vehicle[100];
-  for (int i = 0; i < wanderers.length; i++) {
-    wanderers[i] = new Vehicle(random(0, width), random(0, height));
+  for (int i = 1; i < wanderers.length; i++) {
+    wanderers[i] = new Herbi(random(0, width), random(0, height));
   }
-  wanderers[0].isHunter = true;
-
-  killSound = minim.loadFile("data/ololoo.mp3");
+  wanderers[0] = new Hunter(random(0, width), random(0, height));
 }
 
 void draw() {
   background(255);
-  
+
   int counter = 0;
   for (int a = 0; a < wanderers.length; a++) {
-    if (wanderers[a].isHunter) {
+    if (wanderers[a].getClass() == Hunter.class) {
       counter++;
       for (int b = 0; b < wanderers.length; b++) {
-        if (!wanderers[b].isHunter) {
+        if (!(wanderers[b].getClass() == Hunter.class)) {
           if (wanderers[b].position.dist(wanderers[a].position) < wanderers[a].r) {
-            wanderers[a].hunterKill(wanderers[b]);
+            Hunter hunter = (Hunter)wanderers[a];
+            hunter.hunterKill((Herbi)wanderers[b]);
             continue;
           } else if (wanderers[b].position.dist(wanderers[a].position) < wanderers[a].sensorRange) {
             wanderers[a].seek(wanderers[b].position);
@@ -49,7 +37,7 @@ void draw() {
     wanderers[a].wander();
     wanderers[a].run();
   }
-  
+
   if (counter == wanderers.length) {
     exit();
   }
